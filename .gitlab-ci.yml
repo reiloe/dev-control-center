@@ -1,0 +1,34 @@
+stages:
+  - test
+  - build
+
+backend-maven:
+  stage: test
+  image: eclipse-temurin:21-jdk
+  script:
+    - cd backend
+    - ./mvnw -B clean verify
+  artifacts:
+    when: always
+    reports:
+      junit: backend/target/surefire-reports/TEST-*.xml
+
+backend-gradle:
+  stage: test
+  image: eclipse-temurin:21-jdk
+  script:
+    - cd backend
+    - ./gradlew clean check --no-daemon
+
+frontend-build:
+  stage: build
+  image: node:22-alpine
+  script:
+    - cd frontend
+    - npm ci
+    - npm run lint
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 hour
