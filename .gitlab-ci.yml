@@ -6,6 +6,8 @@ backend-maven:
   stage: test
   image: eclipse-temurin:21-jdk
   script:
+    - python3 scripts/update-tree.py
+    - git diff --exit-code README.md
     - cd backend
     - ./mvnw -B clean verify
   artifacts:

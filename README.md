@@ -6,6 +6,7 @@
 ![Java 21](https://img.shields.io/badge/Java-21_LTS-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![React](https://img.shields.io/badge/React-19_%7C_TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 A fullstack infrastructure management dashboard built with **Java 21 / Spring Boot** and **React / TypeScript** to monitor, control, and audit local Docker Compose services in real time.
@@ -79,22 +80,31 @@ dev-control-center/
 │   │   │   │   └── de
 │   │   │   │       └── reilo
 │   │   │   │           └── controlcenter
+│   │   │   │               ├── audit
+│   │   │   │               │   ├── AuditController.java
+│   │   │   │               │   ├── AuditEvent.java
+│   │   │   │               │   └── AuditEventRepository.java
 │   │   │   │               ├── config
 │   │   │   │               │   └── DockerClientConfig.java
 │   │   │   │               ├── docker
 │   │   │   │               │   ├── DockerService.java
 │   │   │   │               │   ├── ServiceController.java
 │   │   │   │               │   └── ServiceStatusDto.java
+│   │   │   │               ├── snapshot
+│   │   │   │               │   ├── SnapshotController.java
+│   │   │   │               │   └── SnapshotService.java
 │   │   │   │               └── ControlCenterApplication.java
 │   │   │   └── resources
 │   │   │       └── application.yml
 │   │   └── test
-│   │       └── java
-│   │           └── de
-│   │               └── reilo
-│   │                   └── controlcenter
-│   │                       └── docker
-│   │                           └── DockerServiceTest.java
+│   │       ├── java
+│   │       │   └── de
+│   │       │       └── reilo
+│   │       │           └── controlcenter
+│   │       │               └── docker
+│   │       │                   └── DockerServiceTest.java
+│   │       └── resources
+│   │           └── application.yml
 │   ├── build.gradle.kts
 │   ├── gradlew
 │   ├── gradlew.bat
@@ -110,6 +120,7 @@ dev-control-center/
 │   │   ├── api
 │   │   │   └── servicesApi.ts
 │   │   ├── components
+│   │   │   ├── AuditDrawer.tsx
 │   │   │   └── LogModal.tsx
 │   │   ├── App.tsx
 │   │   ├── index.css
@@ -126,6 +137,7 @@ dev-control-center/
 │   └── vite.config.ts
 ├── scripts
 │   └── update-tree.py
+├── .gitignore
 ├── .gitlab-ci.yml
 ├── LICENSE
 └── README.md
