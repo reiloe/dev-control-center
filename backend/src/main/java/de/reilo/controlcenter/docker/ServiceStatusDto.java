@@ -1,5 +1,7 @@
 package de.reilo.controlcenter.docker;
 
+import java.io.Serializable;
+
 public record ServiceStatusDto(
         String containerName,
         String serviceName,
@@ -7,4 +9,4 @@ public record ServiceStatusDto(
         String state,
         String statusText,
         String webUiUrl
-) {}
+) implements Serializable {}

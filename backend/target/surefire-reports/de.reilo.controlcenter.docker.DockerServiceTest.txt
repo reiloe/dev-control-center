@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: de.reilo.controlcenter.docker.DockerServiceTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.337 s -- in de.reilo.controlcenter.docker.DockerServiceTest

@@ -8,9 +8,12 @@ import {
   Server,
   Square,
   Terminal,
+  Camera,
+  History,
 } from 'lucide-react';
-import { controlService, fetchServices, type ServiceStatus } from './api/servicesApi';
+import { controlService, fetchServices, triggerSnapshot, type ServiceStatus } from './api/servicesApi';
 import { LogModal } from './components/LogModal';
+import { AuditDrawer } from './components/AuditDrawer';
 
 export function App() {
   const [services, setServices] = useState<ServiceStatus[]>([]);
@@ -20,6 +23,25 @@ export function App() {
   const [selectedProfile, setSelectedProfile] = useState('ALL');
   const [busyContainer, setBusyContainer] = useState<string | null>(null);
   const [activeLogService, setActiveLogService] = useState<ServiceStatus | null>(null);
+
+  const [showAudit, setShowAudit] = useState(false);
+  const [snapshotting, setSnapshotting] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleSnapshot = async () => {
+    setSnapshotting(true);
+    setToastMessage(null);
+    try {
+      const res = await triggerSnapshot();
+      setToastMessage(
+          `Saved ${res.objectKey} to SeaweedFS S3 (${res.bucket}) & notified via Mailpit!`
+      );
+    } catch (err) {
+      setToastMessage(err instanceof Error ? err.message : 'Snapshot failed');
+    } finally {
+      setSnapshotting(false);
+    }
+  };
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -131,6 +153,23 @@ export function App() {
                 <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
                 Sync
               </button>
+              <button
+                  onClick={handleSnapshot}
+                  disabled={snapshotting}
+                  className="flex items-center gap-1.5 rounded-lg bg-cyan-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-cyan-500 disabled:opacity-50"
+              >
+                <Camera className="h-3.5 w-3.5" />
+                {snapshotting ? 'Exporting...' : 'Snapshot (S3)'}
+              </button>
+
+              <button
+                  onClick={() => setShowAudit(true)}
+                  className="flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-2 text-xs font-medium text-slate-200 transition hover:bg-slate-700"
+              >
+                <History className="h-3.5 w-3.5" />
+                Audit Log
+              </button>
+
             </div>
           </div>
         </header>
@@ -279,6 +318,17 @@ export function App() {
                 onClose={() => setActiveLogService(null)}
             />
         )}
+        {toastMessage && (
+            <div className="mb-6 flex items-center justify-between rounded-xl border border-cyan-500/40 bg-cyan-950/40 px-4 py-3 text-xs text-cyan-200">
+              <span>{toastMessage}</span>
+              <button onClick={() => setToastMessage(null)} className="text-cyan-400 hover:underline">
+                Dismiss
+              </button>
+            </div>
+        )}
+
+        {showAudit && <AuditDrawer onClose={() => setShowAudit(false)} />}
+
       </div>
   );
 }

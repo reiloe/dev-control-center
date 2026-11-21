@@ -38,7 +38,7 @@ public class DockerService {
             new ServiceDefinition("dev-sonarqube", "SonarQube", "sonarqube", "http://localhost:9000"),
             new ServiceDefinition("dev-registry", "Docker Registry", "registry", null),
             new ServiceDefinition("dev-registry-ui", "Docker Registry UI", "registry", "http://localhost:8091"),
-            new ServiceDefinition("dev-minio", "MinIO (S3)", "minio", "http://localhost:9003"),
+            new ServiceDefinition("dev-seaweedfs", "SeaweedFS (S3)", "seaweedfs", "http://localhost:9003"),
             new ServiceDefinition("dev-localstack", "LocalStack (AWS)", "localstack", "http://localhost:4566"),
             new ServiceDefinition("dev-keycloak", "Keycloak (OIDC)", "keycloak", "http://localhost:8086"),
             new ServiceDefinition("dev-nexus", "Sonatype Nexus", "nexus", "http://localhost:8087"),
@@ -47,12 +47,19 @@ public class DockerService {
     );
 
     private final DockerClient dockerClient;
+    private final de.reilo.controlcenter.audit.AuditEventRepository auditEventRepository;
 
-    public DockerService(DockerClient dockerClient) {
+    public DockerService(
+            DockerClient dockerClient,
+            de.reilo.controlcenter.audit.AuditEventRepository auditEventRepository
+    ) {
         this.dockerClient = dockerClient;
+        this.auditEventRepository = auditEventRepository;
     }
 
+    @org.springframework.cache.annotation.Cacheable("serviceStatuses")
     public List<ServiceStatusDto> getAllServiceStatuses() {
+
         List<Container> containers = dockerClient.listContainersCmd().withShowAll(true).exec();
         Map<String, Container> containerByName = containers.stream()
                 .filter(c -> c.getNames() != null && c.getNames().length > 0)
@@ -82,15 +89,24 @@ public class DockerService {
                 .toList();
     }
 
+    @org.springframework.cache.annotation.CacheEvict(value = "serviceStatuses", allEntries = true)
     public void startContainer(String containerName) {
         validateKnownContainer(containerName);
         dockerClient.startContainerCmd(containerName).exec();
+        auditEventRepository.save(
+                new de.reilo.controlcenter.audit.AuditEvent(containerName, "START", "local-dev", java.time.Instant.now())
+        );
     }
 
+    @org.springframework.cache.annotation.CacheEvict(value = "serviceStatuses", allEntries = true)
     public void stopContainer(String containerName) {
         validateKnownContainer(containerName);
         dockerClient.stopContainerCmd(containerName).exec();
+        auditEventRepository.save(
+                new de.reilo.controlcenter.audit.AuditEvent(containerName, "STOP", "local-dev", java.time.Instant.now())
+        );
     }
+
 
     public List<String> getContainerLogs(String containerName, int tailLines) {
         validateKnownContainer(containerName);

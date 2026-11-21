@@ -39,3 +39,34 @@ export async function fetchContainerLogs(
     }
     return response.json();
 }
+
+export interface AuditEvent {
+    id: number;
+    containerName: string;
+    action: 'START' | 'STOP' | string;
+    actor: string;
+    occurredAt: string;
+}
+
+export interface SnapshotResult {
+    bucket: string;
+    objectKey: string;
+    notification: string;
+}
+
+export async function fetchAuditEvents(): Promise<AuditEvent[]> {
+    const response = await fetch('/api/audit');
+    if (!response.ok) {
+        throw new Error('Failed to fetch audit events');
+    }
+    return response.json();
+}
+
+export async function triggerSnapshot(): Promise<SnapshotResult> {
+    const response = await fetch('/api/snapshots', { method: 'POST' });
+    if (!response.ok) {
+        throw new Error('Failed to create snapshot (is Seaweedfs & Mailpit running?)');
+    }
+    return response.json();
+}
+

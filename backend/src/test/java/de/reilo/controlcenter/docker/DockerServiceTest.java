@@ -5,6 +5,7 @@ import com.github.dockerjava.api.command.ListContainersCmd;
 import com.github.dockerjava.api.command.StartContainerCmd;
 import com.github.dockerjava.api.command.StopContainerCmd;
 import com.github.dockerjava.api.model.Container;
+import de.reilo.controlcenter.audit.AuditEventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,6 +23,8 @@ class DockerServiceTest {
     @Mock
     private DockerClient dockerClient;
 
+    @Mock private AuditEventRepository auditEventRepository;
+
     @Mock
     private ListContainersCmd listContainersCmd;
 
@@ -29,7 +32,7 @@ class DockerServiceTest {
 
     @BeforeEach
     void setUp() {
-        dockerService = new DockerService(dockerClient);
+        dockerService = new DockerService(dockerClient, auditEventRepository);
     }
 
     @Test

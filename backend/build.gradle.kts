@@ -21,9 +21,16 @@ repositories {
 dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.actuator)
+    implementation(libs.spring.boot.starter.data.jpa)
+    implementation(libs.spring.boot.starter.cache)
+    implementation(libs.spring.boot.starter.data.redis)
+    implementation(libs.spring.boot.starter.mail)
     implementation(libs.micrometer.registry.prometheus)
     implementation(libs.docker.java.core)
     implementation(libs.docker.java.transport)
+    implementation(libs.aws.s3)
+
+    runtimeOnly(libs.postgresql)
 
     constraints {
         implementation(libs.commons.io) {
@@ -32,7 +39,13 @@ dependencies {
     }
 
     testImplementation(libs.spring.boot.starter.test)
+    testRuntimeOnly(libs.h2)
 }
+
+configurations.all {
+    exclude(group = "commons-logging", module = "commons-logging")
+}
+
 
 jacoco {
     toolVersion = libs.versions.jacoco.get()

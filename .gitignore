@@ -1,0 +1,46 @@
+# Java / Maven / Gradle
+target/
+build/
+.gradle/
+*.jar
+*.war
+*.ear
+*.class
+hs_err_pid*
+replay_pid*
+!**/gradle/wrapper/gradle-wrapper.jar
+!**/.mvn/wrapper/maven-wrapper.jar
+
+# Node.js / React / Vite
+node_modules/
+dist/
+dist-ssr/
+*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.eslintcache
+
+# Environment & Local Secrets
+.env
+.env.*
+!.env.example
+
+# IDEs & Editors
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.classpath
+.project
+.settings/
+
+# OS & Logs
+.DS_Store
+Thumbs.db
+*.log
