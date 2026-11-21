@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { X, RefreshCw, Terminal } from 'lucide-react';
 import { fetchContainerLogs } from '../api/servicesApi';
 
@@ -13,7 +13,7 @@ export function LogModal({ containerName, serviceName, onClose }: LogModalProps)
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    const loadLogs = async () => {
+    const handleManualRefresh = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
@@ -24,10 +24,32 @@ export function LogModal({ containerName, serviceName, onClose }: LogModalProps)
         } finally {
             setLoading(false);
         }
-    };
+    }, [containerName]);
 
     useEffect(() => {
-        loadLogs();
+        let active = true;
+
+        fetchContainerLogs(containerName, 120)
+            .then((lines) => {
+                if (active) {
+                    setLogs(lines);
+                    setError(null);
+                }
+            })
+            .catch((err) => {
+                if (active) {
+                    setError(err instanceof Error ? err.message : 'Could not load logs');
+                }
+            })
+            .finally(() => {
+                if (active) {
+                    setLoading(false);
+                }
+            });
+
+        return () => {
+            active = false;
+        };
     }, [containerName]);
 
     return (
@@ -43,7 +65,7 @@ export function LogModal({ containerName, serviceName, onClose }: LogModalProps)
                     </div>
                     <div className="flex items-center gap-2">
                         <button
-                            onClick={loadLogs}
+                            onClick={handleManualRefresh}
                             className="flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700"
                         >
                             <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />

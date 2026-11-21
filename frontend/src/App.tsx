@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Activity,
   ExternalLink,
@@ -21,7 +21,8 @@ export function App() {
   const [busyContainer, setBusyContainer] = useState<string | null>(null);
   const [activeLogService, setActiveLogService] = useState<ServiceStatus | null>(null);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
+    setLoading(true);
     try {
       const data = await fetchServices();
       setServices(data);
@@ -31,13 +32,40 @@ export function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
+    let active = true;
+
+    const sync = () => {
+      fetchServices()
+          .then((data) => {
+            if (active) {
+              setServices(data);
+              setError(null);
+            }
+          })
+          .catch((err) => {
+            if (active) {
+              setError(err instanceof Error ? err.message : 'Backend unreachable');
+            }
+          })
+          .finally(() => {
+            if (active) {
+              setLoading(false);
+            }
+          });
+    };
+
+    sync();
+    const interval = setInterval(sync, 5000);
+
+    return () => {
+      active = false;
+      clearInterval(interval);
+    };
   }, []);
+
 
   const profiles = useMemo(() => {
     const unique = Array.from(new Set(services.map((s) => s.profile)));
