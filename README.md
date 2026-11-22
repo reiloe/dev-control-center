@@ -61,9 +61,21 @@ npm install
 npm run dev
 ```
 
+### 4. Build Multi-Arch Container Images (Optional)
+
+Both sub-projects include hardened multi-stage `Dockerfile` definitions (`arm64` / `amd64`) running as non-root users with built-in health checks:
+
+```bash
+# Build backend image (Spring Boot 3.5 / JRE 21)
+docker build -t localhost:5050/dev-control-center-backend:1.0.0 ./backend
+
+# Build frontend image (React / Nginx Unprivileged on port 8080)
+docker build -t localhost:5050/dev-control-center-frontend:1.0.0 ./frontend
+```
+
 Open `http://localhost:5173` in your browser.
 
-### 4. Sign In (`http://localhost:5173`)
+### 5. Sign In (`http://localhost:5173`)
 
 | Username | Password | Role(s) | Permissions |
 | :--- | :--- | :--- | :--- |
@@ -118,7 +130,9 @@ dev-control-center/
 │   │       │                   └── DockerServiceTest.java
 │   │       └── resources
 │   │           └── application.yml
+│   ├── .dockerignore
 │   ├── build.gradle.kts
+│   ├── Dockerfile
 │   ├── gradlew
 │   ├── gradlew.bat
 │   ├── mvnw
@@ -140,9 +154,12 @@ dev-control-center/
 │   │   ├── App.tsx
 │   │   ├── index.css
 │   │   └── main.tsx
+│   ├── .dockerignore
 │   ├── .gitignore
+│   ├── Dockerfile
 │   ├── eslint.config.js
 │   ├── index.html
+│   ├── nginx.conf
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── README.md
@@ -154,6 +171,7 @@ dev-control-center/
 │   └── update-tree.py
 ├── .gitignore
 ├── .gitlab-ci.yml
+├── docker-compose.yml
 ├── LICENSE
 └── README.md
 ```

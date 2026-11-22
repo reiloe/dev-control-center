@@ -29,3 +29,11 @@ All `/api/**` endpoints require a valid Bearer JWT issued by Keycloak (`realm: d
 | `GET` | `/api/audit` | Lists the 50 most recent container control actions |
 | `POST` | `/api/snapshots` | Exports a JSON status snapshot to Seaweedfs and sends a Mailpit alert |
 | `GET` | `/actuator/prometheus` | Exposes JVM & HTTP metrics for Prometheus scraping |
+
+## Container Build
+
+The multi-stage `Dockerfile` compiles the Spring Boot JAR using Maven and packages it into a minimal `eclipse-temurin:21-jre-jammy` runtime image running as a dedicated non-root user (`appuser`):
+
+```bash
+docker build -t localhost:5050/dev-control-center-backend:1.0.0 .
+```

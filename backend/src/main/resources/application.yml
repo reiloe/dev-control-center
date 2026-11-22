@@ -30,6 +30,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8086/realms/dev-control-center}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://localhost:8086/realms/dev-control-center/protocol/openid-connect/certs}
 
 app:
   security:

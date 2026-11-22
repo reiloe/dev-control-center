@@ -1,0 +1,48 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: localhost:5050/dev-control-center-backend:1.0.0
+    container_name: control-center-backend
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/appdb
+      SPRING_DATASOURCE_USERNAME: appuser
+      SPRING_DATASOURCE_PASSWORD: secretpassword
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_MAIL_HOST: mailpit
+      SPRING_MAIL_PORT: 1025
+      S3_ENDPOINT: http://seaweedfs:8333
+      S3_ACCESS_KEY: admin
+      S3_SECRET_KEY: secretpassword
+      KEYCLOAK_ISSUER_URI: http://localhost:8086/realms/dev-control-center
+      KEYCLOAK_JWK_SET_URI: http://keycloak:8080/realms/dev-control-center/protocol/openid-connect/certs
+      DOCKER_HOST: unix:///var/run/docker.sock
+    group_add:
+      - "0"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - dev-net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: localhost:5050/dev-control-center-frontend:1.0.0
+    container_name: control-center-frontend
+    restart: unless-stopped
+    ports:
+      - "5173:8080"
+    depends_on:
+      - backend
+    networks:
+      - dev-net
+
+networks:
+  dev-net:
+    external: true

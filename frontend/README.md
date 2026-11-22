@@ -18,3 +18,11 @@ npm run build    # Type-checks (tsc) and creates production bundle in dist/
 * **Profile & Search Filtering:** Filter services by Docker Compose profile (`postgres`, `seaweedfs`, `keycloak`, `monitoring`, etc.) or free-text search.
 * **Container Controls & Logs:** Start/stop containers (`ADMIN` only) and inspect live stdout/stderr logs in a modal viewer.
 * **Audit History & S3 Snapshots:** Inspect PostgreSQL audit logs in a slide-over drawer and trigger JSON status exports to SeaweedFS (S3) with Mailpit email notifications.
+
+## Container Build
+
+The multi-stage `Dockerfile` compiles the Vite production bundle and serves it via `nginxinc/nginx-unprivileged:1.27-alpine` on port `8080`, including SPA fallback routing and an `/api/` reverse proxy configured in `nginx.conf`:
+
+```bash
+docker build -t localhost:5050/dev-control-center-frontend:1.0.0 .
+```
