@@ -11,16 +11,15 @@ RUN ./mvnw clean package -DskipTests -B
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-RUN groupadd -r appgroup && useradd -r -g appgroup appuser
+RUN groupadd -g 10001 appgroup && useradd -u 10001 -g appgroup -r appuser
 
-COPY --from=builder /app/target/*.jar app.jar
-RUN chown appuser:appgroup app.jar
+COPY --from=builder --chown=10001:10001 /app/target/*.jar app.jar
 
-USER appuser
+USER 10001:10001
 
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD curl -f http://localhost:8080/actuator/health || exit 1
+  CMD ["curl", "-f", "http://localhost:8080/actuator/health"]
 
 ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]

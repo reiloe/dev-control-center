@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -e
+
+echo "🔍 Running pre-commit checks for dev-control-center..."
+
+if [ -f "scripts/update-tree.py" ]; then
+  python3 scripts/update-tree.py
+  git add README.md
+fi
+
+if [ -f "docker-compose.yml" ] && command -v docker &> /dev/null && docker info &> /dev/null; then
+  echo "  -> Validating docker-compose.yml..."
+  docker compose config --quiet
+fi
+
+if command -v hadolint &> /dev/null; then
+  echo "  -> Linting Dockerfiles with hadolint..."
+  [ -f "backend/Dockerfile" ] && hadolint backend/Dockerfile
+  [ -f "frontend/Dockerfile" ] && hadolint frontend/Dockerfile
+fi
+
+if git diff --cached --name-only | grep -q "^frontend/"; then
+  echo "  -> Linting frontend TypeScript code..."
+  (cd frontend && npm run lint)
+fi
+
+echo "✅ All pre-commit checks passed!"

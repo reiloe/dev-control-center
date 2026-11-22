@@ -84,6 +84,16 @@ Open `http://localhost:5173` in your browser.
 
 ---
 
+## Local Git Pre-Commit Hook (Optional)
+
+This repository includes a versioned pre-commit hook (`scripts/pre-commit`) that automatically updates the project tree in `README.md` and validates JSON configs, `docker-compose.yml` profiles, shell scripts (`shellcheck`), and the custom `Dockerfile` (`hadolint`) before each commit:
+
+```bash
+cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+```
+
+---
+
 ## Project Structure
 
 <!-- TREE_START -->
@@ -168,6 +178,7 @@ dev-control-center/
 │   ├── tsconfig.node.json
 │   └── vite.config.ts
 ├── scripts
+│   ├── pre-commit
 │   └── update-tree.py
 ├── .gitignore
 ├── .gitlab-ci.yml
