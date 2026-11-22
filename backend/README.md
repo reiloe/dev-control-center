@@ -1,6 +1,6 @@
 # DevOps Control Center — Backend
 
-Java 21 + Spring Boot 3.5 REST service managing local Docker containers and integrating with PostgreSQL, Redis, Seaweedfs (S3), Mailpit, and Prometheus.
+Java 21 + Spring Boot 3.5 OAuth2 Resource Server managing local Docker containers and integrating with **Keycloak**, **PostgreSQL**, **Redis**, **SeaweedFS (S3)**, **Mailpit**, and **Prometheus**.
 
 ## Build & Test (Dual Build Setup)
 
@@ -17,6 +17,8 @@ Both **Apache Maven** and **Gradle (Kotlin DSL + Version Catalog)** are supporte
 ```
 
 ## Key Endpoints
+
+All `/api/**` endpoints require a valid Bearer JWT issued by Keycloak (`realm: dev-control-center`):
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |

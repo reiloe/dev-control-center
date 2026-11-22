@@ -25,6 +25,15 @@ spring:
   mail:
     host: ${SPRING_MAIL_HOST:localhost}
     port: ${SPRING_MAIL_PORT:1025}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8086/realms/dev-control-center}
+
+app:
+  security:
+    enabled: ${SECURITY_ENABLED:true}
 
 storage:
   s3:

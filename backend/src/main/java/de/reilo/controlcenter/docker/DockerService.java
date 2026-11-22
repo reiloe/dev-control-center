@@ -94,7 +94,7 @@ public class DockerService {
         validateKnownContainer(containerName);
         dockerClient.startContainerCmd(containerName).exec();
         auditEventRepository.save(
-                new de.reilo.controlcenter.audit.AuditEvent(containerName, "START", "local-dev", java.time.Instant.now())
+                new de.reilo.controlcenter.audit.AuditEvent(containerName, "START", currentUsername(), java.time.Instant.now())
         );
     }
 
@@ -103,7 +103,7 @@ public class DockerService {
         validateKnownContainer(containerName);
         dockerClient.stopContainerCmd(containerName).exec();
         auditEventRepository.save(
-                new de.reilo.controlcenter.audit.AuditEvent(containerName, "STOP", "local-dev", java.time.Instant.now())
+                new de.reilo.controlcenter.audit.AuditEvent(containerName, "STOP", currentUsername(), java.time.Instant.now())
         );
     }
 
@@ -136,5 +136,14 @@ public class DockerService {
         if (!isKnown) {
             throw new IllegalArgumentException("Unknown or unmanaged container: " + containerName);
         }
+    }
+
+    private String currentUsername() {
+        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.getPrincipal() instanceof org.springframework.security.oauth2.jwt.Jwt jwt) {
+            String preferred = jwt.getClaimAsString("preferred_username");
+            return preferred != null ? preferred : jwt.getSubject();
+        }
+        return "local-dev";
     }
 }

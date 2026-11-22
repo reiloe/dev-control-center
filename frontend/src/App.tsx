@@ -10,12 +10,17 @@ import {
   Terminal,
   Camera,
   History,
+  LogOut,
+  ShieldCheck
 } from 'lucide-react';
 import { controlService, fetchServices, triggerSnapshot, type ServiceStatus } from './api/servicesApi';
 import { LogModal } from './components/LogModal';
 import { AuditDrawer } from './components/AuditDrawer';
+import { getUsername, isAdmin, keycloak } from './auth/keycloak';
 
 export function App() {
+  const canManage = isAdmin();
+  const username = getUsername();
   const [services, setServices] = useState<ServiceStatus[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -153,6 +158,8 @@ export function App() {
                 <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
                 Sync
               </button>
+
+              {canManage && (
               <button
                   onClick={handleSnapshot}
                   disabled={snapshotting}
@@ -161,6 +168,7 @@ export function App() {
                 <Camera className="h-3.5 w-3.5" />
                 {snapshotting ? 'Exporting...' : 'Snapshot (S3)'}
               </button>
+              )}
 
               <button
                   onClick={() => setShowAudit(true)}
@@ -169,6 +177,31 @@ export function App() {
                 <History className="h-3.5 w-3.5" />
                 Audit Log
               </button>
+
+              <button
+                  onClick={loadData}
+                  className="flex items-center gap-1.5 rounded-lg bg-slate-800 px-3 py-2 text-xs font-medium text-slate-200 transition hover:bg-slate-700"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+                Sync
+              </button>
+
+              <div className="flex items-center gap-2 border-l border-slate-800 pl-4">
+              <span className="flex items-center gap-1.5 text-xs text-slate-300">
+                <ShieldCheck className="h-4 w-4 text-cyan-400" />
+                <strong>{username}</strong>
+                <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-bold text-cyan-400">
+                  {canManage ? 'ADMIN' : 'VIEWER'}
+                </span>
+              </span>
+                <button
+                    onClick={() => keycloak.logout()}
+                    title="Logout"
+                    className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-800 hover:text-rose-400"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
 
             </div>
           </div>
@@ -263,25 +296,26 @@ export function App() {
 
                     <div className="flex items-center justify-between gap-2 border-t border-slate-800/80 pt-3">
                       <div className="flex items-center gap-2">
-                        {!isRunning ? (
-                            <button
-                                disabled={isNotCreated || isBusy}
-                                onClick={() => handleAction(service.containerName, 'start')}
-                                className="flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
-                            >
-                              <Play className="h-3.5 w-3.5" />
-                              Start
-                            </button>
-                        ) : (
-                            <button
-                                disabled={isBusy}
-                                onClick={() => handleAction(service.containerName, 'stop')}
-                                className="flex items-center gap-1 rounded-lg bg-rose-600/90 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-rose-500 disabled:opacity-40"
-                            >
-                              <Square className="h-3.5 w-3.5" />
-                              Stop
-                            </button>
-                        )}
+                        {canManage &&
+                            (!isRunning ? (
+                                <button
+                                    disabled={isNotCreated || isBusy}
+                                    onClick={() => handleAction(service.containerName, 'start')}
+                                    className="flex items-center gap-1 rounded-lg bg-emerald-600 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-40"
+                                >
+                                  <Play className="h-3.5 w-3.5" />
+                                  Start
+                                </button>
+                            ) : (
+                                <button
+                                    disabled={isBusy}
+                                    onClick={() => handleAction(service.containerName, 'stop')}
+                                    className="flex items-center gap-1 rounded-lg bg-rose-600/90 px-2.5 py-1.5 text-xs font-medium text-white transition hover:bg-rose-500 disabled:opacity-40"
+                                >
+                                  <Square className="h-3.5 w-3.5" />
+                                  Stop
+                                </button>
+                            ))}
 
                         <button
                             disabled={isNotCreated}

@@ -25,6 +25,8 @@ dependencies {
     implementation(libs.spring.boot.starter.cache)
     implementation(libs.spring.boot.starter.data.redis)
     implementation(libs.spring.boot.starter.mail)
+    implementation(libs.spring.boot.starter.oauth2.resource.server)
+    implementation(libs.spring.security.test)
     implementation(libs.micrometer.registry.prometheus)
     implementation(libs.docker.java.core)
     implementation(libs.docker.java.transport)

@@ -6,6 +6,7 @@
 ![Java 21](https://img.shields.io/badge/Java-21_LTS-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![React](https://img.shields.io/badge/React-19_%7C_TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Keycloak](https://img.shields.io/badge/Keycloak-OAuth2_%2F_OIDC-4D4D4D?style=for-the-badge&logo=keycloak&logoColor=white)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
@@ -43,7 +44,11 @@ git clone https://gitlab.com/reilo2401/dev-control-center.git
 cd dev-control-center
 ```
 
-### 2. Run Backend & Frontend Locally
+### 2. Start Required Infrastructure (`dev-environment`)
+
+Start the `postgres`, `redis`, `seaweedfs`, `mailpit`, and `keycloak` profiles via `./start.sh` in [`dev-environment`](https://gitlab.com/reilo2401/dev-environment). The Keycloak realm `dev-control-center` and test users are provisioned automatically on startup.
+
+### 3. Run Backend & Frontend Locally
 
 ```bash
 # Terminal 1: Start Spring Boot Backend (port 8080)
@@ -57,6 +62,13 @@ npm run dev
 ```
 
 Open `http://localhost:5173` in your browser.
+
+### 4. Sign In (`http://localhost:5173`)
+
+| Username | Password | Role(s) | Permissions |
+| :--- | :--- | :--- | :--- |
+| `admin-user` | `admin123` | `ADMIN`, `VIEWER` | Full access: view status/logs/audit, start/stop containers, trigger S3 snapshots |
+| `viewer-user` | `viewer123` | `VIEWER` | Read-only access: view status, live container logs, and audit history |
 
 ---
 
@@ -85,7 +97,8 @@ dev-control-center/
 │   │   │   │               │   ├── AuditEvent.java
 │   │   │   │               │   └── AuditEventRepository.java
 │   │   │   │               ├── config
-│   │   │   │               │   └── DockerClientConfig.java
+│   │   │   │               │   ├── DockerClientConfig.java
+│   │   │   │               │   └── SecurityConfig.java
 │   │   │   │               ├── docker
 │   │   │   │               │   ├── DockerService.java
 │   │   │   │               │   ├── ServiceController.java
@@ -119,6 +132,8 @@ dev-control-center/
 │   ├── src
 │   │   ├── api
 │   │   │   └── servicesApi.ts
+│   │   ├── auth
+│   │   │   └── keycloak.ts
 │   │   ├── components
 │   │   │   ├── AuditDrawer.tsx
 │   │   │   └── LogModal.tsx
