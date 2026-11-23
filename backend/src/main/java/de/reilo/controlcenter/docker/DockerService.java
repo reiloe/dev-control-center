@@ -20,6 +20,11 @@ public class DockerService {
 
     private static final List<ServiceDefinition> KNOWN_SERVICES = List.of(
             new ServiceDefinition("dev-portainer", "Portainer CE", "core", "https://localhost:9443"),
+            new ServiceDefinition("dev-forgejo", "Forgejo", "git", "http://localhost:3001"),
+            new ServiceDefinition("dev-forgejo-dind", "Forgejo DinD", "git", null),
+            new ServiceDefinition("dev-forgejo-runner", "Forgejo Runner", "git", null),
+            new ServiceDefinition("dev-bookstack", "BookStack Wiki", "docs", "http://localhost:8089"),
+            new ServiceDefinition("dev-bookstack-db", "BookStack MariaDB", "docs", null),
             new ServiceDefinition("dev-postgres", "PostgreSQL", "postgres", null),
             new ServiceDefinition("dev-pgadmin", "pgAdmin 4", "postgres", "http://localhost:8092"),
             new ServiceDefinition("dev-mariadb", "MariaDB", "mariadb", null),
