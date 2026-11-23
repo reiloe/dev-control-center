@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         SONAR_HOST_URL = 'http://sonarqube:9000'
-        DOCKER_NETWORK = 'dev-environment_dev-net'
+        DOCKER_NETWORK = 'dev-net'
     }
 
     stages {
@@ -41,37 +41,29 @@ pipeline {
                     }
                 }
 
-                stage('Frontend (React, ESLint, Vitest & Build)') {
+                stage('Frontend (React, ESLint, Vitest & SonarQube)') {
                     agent {
                         docker {
-                            image 'node:22-alpine'
-                            args '-e NPM_CONFIG_CACHE=/tmp/.npm'
+                            image 'node:22-bookworm-slim'
+                            args "-e NPM_CONFIG_CACHE=/tmp/.npm --network ${DOCKER_NETWORK}"
                             reuseNode true
                         }
                     }
                     steps {
-                        dir('frontend') {
-                            sh 'npm ci'
-                            sh 'npm run lint'
-                            sh 'npm run test:coverage'
-                            sh 'npm run build'
+                        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
+                            dir('frontend') {
+                                sh '''
+                                    npm ci
+                                    npm run lint
+                                    npm run test:coverage
+                                    npm run build
+                                    npx --yes @sonar/scan \
+                                    -Dsonar.host.url=${SONAR_HOST_URL} \
+                                    -Dsonar.token=${SONAR_TOKEN}
+                                '''
+                            }
                         }
                     }
-                }
-            }
-        }
-
-        stage('Frontend SonarQube Analysis') {
-            steps {
-                withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        docker run --rm \
-                          --network ${DOCKER_NETWORK} \
-                          -e SONAR_HOST_URL=${SONAR_HOST_URL} \
-                          -e SONAR_TOKEN=${SONAR_TOKEN} \
-                          -v "${WORKSPACE}/frontend:/usr/src" \
-                          sonarsource/sonar-scanner-cli:latest
-                    '''
                 }
             }
         }
