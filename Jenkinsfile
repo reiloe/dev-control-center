@@ -91,7 +91,7 @@ pipeline {
                     agent {
                         docker {
                             image 'eclipse-temurin:21-jdk'
-                            args "-e MAVEN_USER_HOME=/tmp/.m2 --network ${DOCKER_NETWORK}"
+                            args "-e HOME=/tmp -e MAVEN_USER_HOME=/tmp/.m2 --network ${DOCKER_NETWORK}"
                             reuseNode true
                         }
                     }
@@ -114,7 +114,9 @@ pipeline {
   </servers>
 </settings>
 EOF
-                                    ./mvnw -B deploy -DskipTests -s /tmp/maven-settings.xml \
+                                    ./mvnw -B deploy -DskipTests \
+                                      -s /tmp/maven-settings.xml \
+                                      -Dmaven.repo.local=.m2-repo \
                                       -Drevision=${IMAGE_TAG}
                                 '''
                             }
