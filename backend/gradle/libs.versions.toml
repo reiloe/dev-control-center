@@ -6,6 +6,7 @@ dockerJava = "3.4.1"
 commonsIo = "2.18.0"
 awsSdk = "2.29.40"
 jacoco = "0.8.12"
+sonarqube = "6.2.0.5505"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
@@ -28,3 +29,4 @@ spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-star
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 dependency-management = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }

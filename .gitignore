@@ -10,6 +10,7 @@ hs_err_pid*
 replay_pid*
 !**/gradle/wrapper/gradle-wrapper.jar
 !**/.mvn/wrapper/maven-wrapper.jar
+.sonar/
 
 # Node.js / React / Vite
 node_modules/
@@ -21,6 +22,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 .eslintcache
+coverage/
+.scannerwork/
 
 # Environment & Local Secrets
 .env

@@ -22,6 +22,10 @@
         <commons-io.version>2.18.0</commons-io.version>
         <aws-sdk.version>2.29.40</aws-sdk.version>
         <jacoco.version>0.8.12</jacoco.version>
+        <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
+        <sonar.projectKey>dev-control-center-backend</sonar.projectKey>
+        <sonar.projectName>DevOps Control Center - Backend</sonar.projectName>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencies>
@@ -144,6 +148,12 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
+            </plugin>
+
         </plugins>
     </build>
 </project>

@@ -3,6 +3,7 @@ plugins {
     jacoco
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.dependency.management)
+    alias(libs.plugins.sonarqube)
 }
 
 group = "de.reilo"
@@ -52,6 +53,18 @@ configurations.all {
 jacoco {
     toolVersion = libs.versions.jacoco.get()
 }
+
+sonar {
+    properties {
+        property("sonar.projectKey", "dev-control-center-backend")
+        property("sonar.projectName", "DevOps Control Center - Backend")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml").get().asFile.absolutePath
+        )
+    }
+}
+
 
 tasks.withType<Test> {
     useJUnitPlatform()
