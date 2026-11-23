@@ -103,8 +103,6 @@ dev-control-center/
 │   └── workflows
 │       └── ci.yml
 ├── backend
-│   ├── .sonar
-│   │   └── spring-context-model.json
 │   ├── gradle
 │   │   ├── wrapper
 │   │   │   ├── gradle-wrapper.jar

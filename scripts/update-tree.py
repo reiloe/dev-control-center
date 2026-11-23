@@ -14,6 +14,9 @@ IGNORE = {
     "dist",
     "__pycache__",
     ".DS_Store",
+    ".sonar",
+    ".scannerwork",
+    "coverage",
 }
 
 
