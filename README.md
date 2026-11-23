@@ -103,6 +103,8 @@ dev-control-center/
 │   └── workflows
 │       └── ci.yml
 ├── backend
+│   ├── .sonar
+│   │   └── spring-context-model.json
 │   ├── gradle
 │   │   ├── wrapper
 │   │   │   ├── gradle-wrapper.jar
@@ -155,6 +157,7 @@ dev-control-center/
 │   │   └── favicon.svg
 │   ├── src
 │   │   ├── api
+│   │   │   ├── servicesApi.test.ts
 │   │   │   └── servicesApi.ts
 │   │   ├── auth
 │   │   │   └── keycloak.ts
@@ -173,6 +176,7 @@ dev-control-center/
 │   ├── package-lock.json
 │   ├── package.json
 │   ├── README.md
+│   ├── sonar-project.properties
 │   ├── tsconfig.app.json
 │   ├── tsconfig.json
 │   ├── tsconfig.node.json
