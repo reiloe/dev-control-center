@@ -3,6 +3,9 @@
 [![GitHub Actions CI](https://img.shields.io/github/actions/workflow/status/reiloe/dev-control-center/ci.yml?branch=main&style=for-the-badge&logo=github&label=GitHub%20CI)](https://github.com/reiloe/dev-control-center/actions/workflows/ci.yml)
 [![GitLab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/reilo2401%2Fdev-control-center?branch=main&style=for-the-badge&logo=gitlab&label=GitLab%20CI)](https://gitlab.com/reilo2401/dev-control-center/-/pipelines)
 
+![Jenkins](https://img.shields.io/badge/Jenkins-CI%2FCD-D24939?style=for-the-badge&logo=jenkins&logoColor=white)
+![SonarQube](https://img.shields.io/badge/SonarQube-Code_Quality-4E9BCD?style=for-the-badge&logo=sonarqube&logoColor=white)
+
 ![Java 21](https://img.shields.io/badge/Java-21_LTS-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![React](https://img.shields.io/badge/React-19_%7C_TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)
@@ -91,6 +94,21 @@ This repository includes a versioned pre-commit hook (`scripts/pre-commit`) that
 ```bash
 cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
 ```
+
+---
+
+## CI/CD & Quality Gates
+
+The repository includes pipelines for **GitHub Actions** (`.github/workflows/ci.yml`), **GitLab CI** (`.gitlab-ci.yml`), and **Jenkins** (`Jenkinsfile`):
+
+1. **Parallel Build, Test & Static Analysis:**
+   * **Backend:** Compiles with Java 21, executes unit & security tests with JaCoCo coverage (`./mvnw clean verify`), and submits metrics to **SonarQube**.
+   * **Frontend:** Installs dependencies, runs ESLint, executes Vitest with LCOV coverage (`npm run test:coverage`), builds the production bundle, and submits results to **SonarQube**.
+2. **Automated Nexus Artifact Deployment:**
+   * Publishes the versioned backend JAR (`maven-releases`) and frontend package (`npm-hosted`) to **Sonatype Nexus**.
+3. **Parameterized Multi-Arch Docker Publishing (`Build with Parameters`):**
+   * `PUSH_PRIVATE_REGISTRY` *(default: `true`)* — builds and pushes multi-arch images to the local Private Docker Registry (`localhost:5050`).
+   * `PUSH_NEXUS_DOCKER` *(default: `false`)* — builds and pushes images to the Nexus Hosted Docker Registry (`localhost:8088`).
 
 ---
 
