@@ -209,8 +209,9 @@ EOF
             }
             steps {
                 script {
-                    sh "docker build -t dev-control-center-backend:${DOCKER_TAG} ./backend"
-                    sh "docker build -t dev-control-center-frontend:${DOCKER_TAG} ./frontend"
+                    sh "docker build --pull=false -t dev-control-center-backend:${DOCKER_TAG} ./backend"
+                    sh "docker build --pull=false -t dev-control-center-frontend:${DOCKER_TAG} ./frontend"
+
 
                     if (params.PUSH_PRIVATE_REGISTRY) {
                         sh """

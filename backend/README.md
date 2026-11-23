@@ -43,4 +43,4 @@ docker build -t localhost:5050/dev-control-center-backend:1.0.0 .
 ## Code Quality & Artifact Publishing
 
 * **SonarQube & JaCoCo:** Run `./mvnw clean verify sonar:sonar` (or `./gradlew clean check sonar`) with `SONAR_TOKEN` set to publish test coverage and static analysis metrics.
-* **Nexus Maven Deployment:** Configured via `<distributionManagement>` (`nexus-releases`) for automated versioned JAR publishing in Jenkins (`./mvnw deploy -Drevision=<tag>`).
+* **Nexus Maven Deployment:** Configured via `<distributionManagement>` (`maven-releases` & `maven-snapshots`) in `pom.xml` as well as `maven-publish` in `build.gradle.kts` for automated snapshot and release JAR publishing.

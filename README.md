@@ -104,11 +104,14 @@ The repository includes pipelines for **GitHub Actions** (`.github/workflows/ci.
 1. **Parallel Build, Test & Static Analysis:**
    * **Backend:** Compiles with Java 21, executes unit & security tests with JaCoCo coverage (`./mvnw clean verify`), and submits metrics to **SonarQube**.
    * **Frontend:** Installs dependencies, runs ESLint, executes Vitest with LCOV coverage (`npm run test:coverage`), builds the production bundle, and submits results to **SonarQube**.
-2. **Automated Nexus Artifact Deployment:**
-   * Publishes the versioned backend JAR (`maven-releases`) and frontend package (`npm-hosted`) to **Sonatype Nexus**.
+2. **Automated Nexus Snapshot & Release Artifact Deployment:**
+   * **Default (`SNAPSHOT`) Builds:** Publishes timestamped backend JARs to `maven-snapshots` (`1.0.0-SNAPSHOT`) and frontend packages to `npm-hosted` (`1.0.0-snapshot.<build>`).
+   * **Release Builds (`CREATE_RELEASE` + `RELEASE_VERSION`):** Resolves a unified version across Maven, npm, and Docker, publishing immutable backend JARs to `maven-releases` and versioned frontend packages to `npm-hosted`.
 3. **Parameterized Multi-Arch Docker Publishing (`Build with Parameters`):**
-   * `PUSH_PRIVATE_REGISTRY` *(default: `true`)* — builds and pushes multi-arch images to the local Private Docker Registry (`localhost:5050`).
+   * `CREATE_RELEASE` & `RELEASE_VERSION` *(default: `false`)* — switches the entire pipeline from `SNAPSHOT` mode to a final release version (and updates the `:latest` Docker tag only on releases).
+   * `PUSH_PRIVATE_REGISTRY` *(default: `true`)* — builds and pushes images to the local Private Docker Registry (`localhost:5050`).
    * `PUSH_NEXUS_DOCKER` *(default: `false`)* — builds and pushes images to the Nexus Hosted Docker Registry (`localhost:8088`).
+
 
 ---
 
