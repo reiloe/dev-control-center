@@ -181,8 +181,11 @@ dev-control-center/
 │   │   ├── auth
 │   │   │   └── keycloak.ts
 │   │   ├── components
-│   │   │   ├── AuditDrawer.tsx
-│   │   │   └── LogModal.tsx
+│   │   │   ├── AuditLogView.tsx
+│   │   │   ├── LogModal.tsx
+│   │   │   ├── ServiceFilterBar.tsx
+│   │   │   ├── ServicesView.tsx
+│   │   │   └── SnapshotsView.tsx
 │   │   ├── App.tsx
 │   │   ├── index.css
 │   │   └── main.tsx
